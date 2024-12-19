@@ -1,0 +1,151 @@
+<body>
+  <div class="container">
+    <form class="mt-4" [formGroup]="registerForm" (ngSubmit)="registerUser()" role="form">
+      <legend>Create an account</legend>
+
+      <div class="mb-3">
+        <label for="name">Name:</label>
+        <input
+          type="text"
+          class="form-control"
+          id="name"
+          formControlName="nameUser"
+          placeholder="Name"
+          [validationClasses]="{ valid: 'is-valid', invalid: 'is-invalid' }"
+        />
+        @let nameError = registerForm.get('nameUser')?.errors;
+        @if(nameError?.['required']){
+            <div class="invalid-feedback">
+                Name is required
+            </div>
+        }
+      </div>
+        <ng-container formGroupName="emailGroup">
+            @let emailGroupModel = registerForm.get('emailGroup')!;
+            <div class="mb-3">
+            <label for="email">Email</label>
+            <input
+                type="email"
+                class="form-control"
+                formControlName="email"
+                placeholder="example@example.example"
+                [validationClasses]="{ valid: 'is-valid', invalid: 'is-invalid' }"
+            />
+            @let emailError = emailGroupModel.get('email')?.errors;
+            @if(emailError?.['required']){
+                <div class="invalid-feedback">
+                    Email is required
+                </div>
+            }
+            @if(emailError?.['email']){
+                <div class="invalid-feedback">
+                    Email must have a valid format 
+                </div>
+            }
+            </div>
+            <div class="mb-3">
+            <label for="email2">Repeat email</label>
+              @let email2Model = emailGroupModel.get('email2')!;
+              <input
+                type="email"
+                class="form-control"
+                formControlName="email2"
+                placeholder="example@example.example"
+                [class]="{
+                  'is-valid': email2Model.touched && !emailGroupModel.errors?.['equalValues'],
+                  'is-invalid': email2Model.touched && emailGroupModel.errors?.['equalValues'],
+                }"
+              />
+              <div class="invalid-feedback">
+                Email address doesn't match
+              </div>
+            </div>
+        </ng-container>
+      <div class="mb-3">
+        <label for="password">Password:</label>
+        <input
+          type="password"
+          class="form-control"
+          id="password"
+          formControlName="password"
+          placeholder="Password"
+          [validationClasses]="{ valid: 'is-valid', invalid: 'is-invalid' }"
+        />
+        @let passError = registerForm.get('password')?.errors;
+        @if(passError?.['required']){
+            <div class="invalid-feedback">
+                Password is required
+            </div>
+        }
+        @if(passError?.['minlength']){
+            <div class="invalid-feedback">
+                Password must have at least
+                {{passError?.['minlength'].requiredLength - passError?.['minlength'].actualLength}}
+                characters more
+            </div>
+        }
+      </div>
+      <div class="form-row">
+        <div class="mb-3 col">
+          <label for="lat">Latitude:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="lat"
+            name="lat"
+            placeholder="Geolocating..."
+            readonly
+            value="{{coords().latitude}}"
+          />
+        </div>
+        <div class="mb-3 col">
+          <label for="lng">Longitude:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="lng"
+            name="lng"
+            placeholder="Geolocating..."
+            readonly
+            value="{{coords().longitude}}"
+          />
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="avatar">Avatar image</label>
+        <input
+            type="file"
+            class="form-control"
+            accept="image/*"
+            encodeBase64
+            (encoded)="imageBase64 = $event"
+            formControlName="avatar"
+            [validationClasses]="{ valid: 'is-valid', invalid: 'is-invalid' }"
+        />
+        <div class="invalid-feedback">An image is required.</div>
+      </div>
+      
+      @if(imageBase64){
+        <img
+            [src]="imageBase64"
+            alt=""
+            class="img-thumbnail mb-3"
+            style="width: 200px; height: auto"
+        />
+      }
+      
+      <br>
+
+      <a class="btn btn-secondary mb-3" [routerLink]="['/auth/login']" role="button"
+        >Go back</a
+      >
+      <button 
+        type="submit" 
+        class="btn btn-primary mb-3"
+        [disabled]="registerForm.invalid"
+      >
+        Create account
+      </button>
+    </form>
+  </div>
+</body>

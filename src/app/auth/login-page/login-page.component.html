@@ -1,0 +1,58 @@
+<form [formGroup]="loginForm" (ngSubmit)="login()" id="form-login" class="mt-4"  role="form">
+  <legend>Welcome to SVTickets!</legend>
+
+  <div class="mb-3">
+    <label for="email">Email:</label>
+    <input
+      type="email"
+      class="form-control"
+      name="email"
+      id="email"
+      placeholder="Email"
+      required
+      formControlName="email"
+      [validationClasses]="{ valid: 'is-valid', invalid: 'is-invalid' }"
+    />
+    @let emailError = loginForm.get('email')?.errors;
+    @if(emailError?.['required']){
+        <div class="invalid-feedback">
+            Email is required
+        </div>
+    }
+    @if(emailError?.['email']){
+        <div class="invalid-feedback">
+            Email must have a valid format
+        </div>
+    }
+  </div>
+  <div class="mb-3">
+    <label for="password">Password:</label>
+    <input
+      type="password"
+      class="form-control"
+      name="password"
+      id="password"
+      placeholder="Password"
+      required
+      formControlName="password"
+      [validationClasses]="{ valid: 'is-valid', invalid: 'is-invalid' }"
+    />
+    @let passwordError = loginForm.get('email')?.errors;
+    @if(passwordError?.['required']){
+        <div class="invalid-feedback">
+            Password is required
+        </div>
+    }
+  </div>
+  <p class="text-danger" id="errorInfo"></p>
+  <a class="btn btn-secondary" [routerLink]="['/auth/register']" role="button"
+    >Create account</a
+  >
+  <button type="submit" class="btn btn-primary">Login</button>
+  <div>
+    <google-login class="btn" (login)="loggedGoogle($event)"></google-login>
+  </div>
+  
+  <button type="submit" class="btn btn-primary" (click)="logout()">logout</button>
+
+</form>
