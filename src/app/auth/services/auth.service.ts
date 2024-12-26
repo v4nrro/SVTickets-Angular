@@ -33,20 +33,6 @@ export class AuthService {
     checkToken(): Observable<void> {
         return this.#http.get<void>(`${this.#authUrl}/validate`);
     }
-    
-    async redirectIfNotLogged(){
-        try{
-            await this.checkToken();
-        }catch{
-            location.assign("./login.html");
-        }
-    }
-
-    async redirectIfLogged(){
-        await this.checkToken();
-
-        location.assign("./index.html")
-    }
 
     logout(): void {
         localStorage.removeItem("token");
