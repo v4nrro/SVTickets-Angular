@@ -24,9 +24,9 @@ export class EventDetailComponent {
 
     constructor() {
         effect(() => {
-        if(this.event()) {
-            this.#title.setTitle(this.event()!.title + ' | Event');
-        }
+            if(this.event()) {
+                this.#title.setTitle(this.event()!.title + ' | Event');
+            }
         });
     }
 
