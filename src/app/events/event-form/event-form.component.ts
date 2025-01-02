@@ -40,16 +40,15 @@ export class EventFormComponent implements CanComponentDeactivate {
 
   coordinates = signal<[number, number]>([-0.5, 38.5]);
 
-  changePlace(result: SearchResult) {
-    this.coordinates.set(result.coordinates);
-    console.log(result.address); // Habría que guardarlo
-  }
+//   changePlace(result: SearchResult) {
+//     this.coordinates.set(result.coordinates);
+//     console.log(result.address); // Habría que guardarlo
+//   }
 
   minDate = new Date().toISOString().substring(0, 10);
 
   eventForm = this.#fb.group({
-    title: [
-      '',
+    title: ['',
       [
         Validators.required,
         Validators.minLength(5),

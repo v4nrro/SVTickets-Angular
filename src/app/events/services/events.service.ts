@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { MyEvent, MyEventInsert } from '../interfaces/MyEvent';
 import { EventsResponse, SingleEventResponse } from '../interfaces/responses';
 import { map, Observable } from 'rxjs';
+import { CommentsResponse, UsersResponse } from '../../shared/interfaces/responses';
 
 @Injectable({
   providedIn: 'root'
@@ -13,9 +14,11 @@ export class EventsService {
     #eventsUrl = 'events'
     #http = inject(HttpClient);
 
-    getEvents(): Observable<MyEvent[]> {
+    getEvents(order: string, currentPage: number, search: string): Observable<MyEvent[]> {
+        const params = new URLSearchParams({ page: String(currentPage), order, search });
+
         return this.#http
-          .get<EventsResponse>(this.#eventsUrl)
+          .get<EventsResponse>(this.#eventsUrl + "?" + params.toString())
           .pipe(map((resp) => resp.events));
       }
 
@@ -33,5 +36,25 @@ export class EventsService {
 
     deleteEvent(id: number): Observable<void> {
         return this.#http.delete<void>(`${this.#eventsUrl}/${id}`);
+    }
+
+    attendEvent(eventId: number): Observable<void> {
+        return this.#http.post<void>(`${this.#eventsUrl}/${eventId}/attend`, {});
+    }
+
+    deleteAttend(eventId: number): Observable<void> {
+        return this.#http.delete<void>(`${this.#eventsUrl}/${eventId}/attend`);
+    }
+
+    getAttendees(eventId: number) : Observable<UsersResponse>{
+        return this.#http.get<UsersResponse>(`${this.#eventsUrl}/${eventId}/attend`);
+    }
+
+    postComment(eventId: number, userComment: string) : Observable<void> {
+        return this.#http.post<void>(`${this.#eventsUrl}/${eventId}/comments`, {comment: userComment});
+    }
+
+    getComments(eventId: number) : Observable<CommentsResponse>{
+        return this.#http.get<CommentsResponse>(`${this.#eventsUrl}/${eventId}/comments`)
     }
 }

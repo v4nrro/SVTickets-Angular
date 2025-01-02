@@ -1,5 +1,6 @@
 import { User } from "../../auth/interfaces/user";
 import { MyEvent } from "../../events/interfaces/MyEvent";
+import { MyComment } from "./Comments";
 
 export interface EventsResponse {
     events: MyEvent[];
@@ -26,4 +27,8 @@ export interface AvatarResponse {
 
 export interface UsersResponse {
     users: User[];
+}
+
+export interface CommentsResponse {
+    comments: MyComment[];
 }

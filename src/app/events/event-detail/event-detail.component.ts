@@ -1,26 +1,36 @@
-import { Component, DestroyRef, effect, inject, input } from '@angular/core';
+import { Component, DestroyRef, effect, inject, input, signal } from '@angular/core';
 import { EventsService } from '../services/events.service';
 import { Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { MyEvent } from '../interfaces/MyEvent';
 import { EventCardComponent } from "../event-card/event-card.component";
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { CommentsResponse, UsersResponse } from '../../shared/interfaces/responses';
+import { DatePipe } from '@angular/common';
+import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
     selector: 'event-detail',
-    imports: [EventCardComponent],
+    imports: [EventCardComponent, DatePipe, FormsModule, ReactiveFormsModule],
     templateUrl: './event-detail.component.html',
     styleUrl: './event-detail.component.css'
 })
 
 export class EventDetailComponent {
 
-    #eventsService = inject(EventsService);
     #title = inject(Title);
     #router = inject(Router);
-    #destroyRef = inject(DestroyRef)
+    #eventsService = inject(EventsService);
+    #destroyRef = inject(DestroyRef);
+    #fb = inject(NonNullableFormBuilder);
     
     event = input.required<MyEvent>();
+    comments = signal<CommentsResponse>({comments: []});
+    attendees = signal<UsersResponse>({users: []});
+
+    commentForm = this.#fb.group({
+        comment: ['', [Validators.required]]
+    });
 
     constructor() {
         effect(() => {
@@ -28,16 +38,40 @@ export class EventDetailComponent {
                 this.#title.setTitle(this.event()!.title + ' | Event');
             }
         });
+
+        effect(() => {
+            this.getAttendees();
+            this.getComments();
+        });
     }
 
-    deleteEvent(){
+    addComment(){
         this.#eventsService
-        .deleteEvent(this.event()!.id!)
+        .postComment(this.event().id, this.commentForm.getRawValue().comment)
         .pipe(takeUntilDestroyed(this.#destroyRef))
-        .subscribe(() => this.#router.navigate(['/events']));
+        .subscribe(() => this.getComments());
     }
 
-    goBack(){
-        location.assign('/events');
+    updateLists(){
+        this.getAttendees();
+        this.getComments();
+    }
+
+    getComments(){
+        this.#eventsService
+        .getComments(this.event().id)
+        .pipe(takeUntilDestroyed(this.#destroyRef))
+        .subscribe((comments) => this.comments.set(comments));
+    }
+
+    getAttendees(){
+        this.#eventsService
+        .getAttendees(this.event().id)
+        .pipe(takeUntilDestroyed(this.#destroyRef))
+        .subscribe((attendees) => this.attendees.set(attendees));
+    }
+
+    redirectEventsPage(){
+        this.#router.navigate(['/events'])
     }
 }

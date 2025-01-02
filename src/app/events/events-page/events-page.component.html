@@ -7,6 +7,9 @@
         <li class="nav-item">
           <button class="btn" id="orderPrice" (click)="orderByPrice()">Order by price</button>
         </li>
+        <li class="nav-item">
+            <button class="btn" id="orderPrice" (click)="orderByDistance()">Order by distance</button>
+        </li>
       </ul>
       <form class="d-flex mb-0">
         <input class="form-control me-2" 
@@ -15,18 +18,21 @@
             id="search" 
             placeholder="Search"
             aria-label="Search"
-            [(ngModel)]="search"
+            [formControl]="searchControl"
         >
       </form>
     </div>
 </nav>
 <div class="col-form-label col-sm-5">Filtered by: {{ search() }}</div>
+<div class="col-form-label col-sm-5">Ordered by: {{ order() }}</div>
 
 <div id="eventsContainer" class="mb-4 mt-4 row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">   
-        @for(event of filteredEvents(); track event.id){
+        @for(event of events(); track event.id){
         <event-card class="col"
             [event]="event" 
             (deleted)="deleteEvent(event)"
         />
     }
 </div>
+
+<div class="mb-4"><button id="loadMore" class="btn btn-primary" (click)="loadMore()">Load More events</button></div>

@@ -14,6 +14,21 @@
                 <i class="bi bi-trash"></i>
             </button>
         }
+
+        @if(event().attend){
+            <attend
+                class="attend"
+                [event]="event()"
+                (click)="deleteAttend(false)"
+            ></attend>
+        }@else{
+            <attend
+            class="attend"
+            [event]="event()"
+            (click)="attendEvent(true)"
+            ></attend>
+        }
+
     </div>
     <div class="card-footer text-muted row m-0">
         <div class="col-auto avatar pl-1 pr-1">
@@ -27,11 +42,11 @@
           </div>
           <div class="col-auto text-end text-muted">
             <div class="price small">{{event().price | intlCurrency:"EUR":"es-ES"}}</div>
-            <div class="distance small">0 km</div>
+            <div class="distance small">{{event().distance.toFixed(1)}}km</div>
           </div>
     </div>
     @if(event().mine){
-        <a class="btn btn-primary">Edit</a>
+        <a class="btn btn-primary" [routerLink]="['/events', event().id, '/edit']">Edit</a>
     }
 </div>
 

@@ -23,7 +23,7 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
     ReactiveFormsModule,
     ValidationClassesDirective,
     FbLoginDirective,
-    FaIconComponent
+    FaIconComponent,
   ],
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.css',
@@ -61,16 +61,16 @@ export class LoginPageComponent {
 
   loggedFacebook(resp: fb.StatusResponse) {
     this.#authService
-    .facebookLogin({
+      .facebookLogin({
         token: resp.authResponse.accessToken!,
         lat: this.coords().latitude,
-        lng: this.coords().longitude
-    })
-    .pipe(takeUntilDestroyed(this.#destroyRef))
-    .subscribe((result) => {
+        lng: this.coords().longitude,
+      })
+      .pipe(takeUntilDestroyed(this.#destroyRef))
+      .subscribe((result) => {
         localStorage.setItem('token', result.accessToken);
         this.#router.navigate(['/events']);
-    })
+      });
   }
 
   loggedGoogle(resp: google.accounts.id.CredentialResponse) {

@@ -1,0 +1,22 @@
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+
+<div class="col-auto ms-auto">
+  <div class="text-end attend-users">
+    <i class="bi bi-people-fill"></i> 
+    {{event().numAttend}}
+  </div>
+  @if(event().attend){
+    <div class="text-success text-end m-0 attend-button attend" (click)="event().attend = false">
+        <i class="bi bi-hand-thumbs-up-fill"></i> 
+        I'm going
+    </div>
+  }@else{
+      <div class="text-danger text-end m-0 attend-button attend" (click)="event().attend = true">
+        <i class="bi bi-hand-thumbs-down-fill"></i> 
+        I'm not going
+      </div>
+    }
+  
+  <!-- Change to bi-hand-thumbs-down-fill if the user is not attending the event  -->
+</div>

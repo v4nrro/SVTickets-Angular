@@ -7,6 +7,7 @@ import { catchError, EMPTY } from 'rxjs';
 export const eventResolver: ResolveFn<MyEvent> = (route, state) => {
     const eventsService = inject(EventsService);
     const router = inject(Router);
+    
     return eventsService.getEvent(+route.paramMap.get('id')!).pipe(
       catchError(() => {
             router.navigate(['/events']);

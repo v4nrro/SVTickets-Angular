@@ -1,19 +1,21 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
+  DestroyRef,
+  effect,
   inject,
   signal,
 } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { EventCardComponent } from '../event-card/event-card.component';
 import { EventsService } from '../services/events.service';
 import { MyEvent } from '../interfaces/MyEvent';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 @Component({
   selector: 'events-page',
-  imports: [FormsModule, EventCardComponent],
+  imports: [FormsModule, EventCardComponent, ReactiveFormsModule],
   templateUrl: './events-page.component.html',
   styleUrl: './events-page.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,11 +27,40 @@ export class EventsPageComponent {
 
   events = signal<MyEvent[]>([]);
 
+  searchControl = new FormControl('');
+  search = toSignal(
+    this.searchControl.valueChanges.pipe(
+        debounceTime(600), 
+        distinctUntilChanged()
+    ),
+    { initialValue: '' }
+  )
+  
+  #destroyRef = inject(DestroyRef);
+
+  order = signal('');
+  pageNumber = signal(1);
+
   constructor() {
-    this.#eventsService
-      .getEvents()
-      .pipe(takeUntilDestroyed())
-      .subscribe((myEvents) => this.events.set(myEvents));
+    effect(() => {
+        if (this.search() !== '' || this.order() !== '') {
+          this.pageNumber.set(1);
+        }
+      });
+
+    effect(() => {
+        this.#eventsService
+        .getEvents(this.order(), this.pageNumber(), this.search()!)
+        .pipe(takeUntilDestroyed(this.#destroyRef))
+        .subscribe((myEvents) => {
+            if(this.pageNumber() === 1) {
+                this.events.set(myEvents)
+            }
+            else {
+                this.events.update((events) => [...events, ...myEvents]);
+            }
+        });
+    });
   }
 
   addEvent(event: MyEvent) {
@@ -40,25 +71,19 @@ export class EventsPageComponent {
     this.events.update((events) => events.filter((e) => e !== event));
   }
 
-  search = signal('');
-  filteredEvents = computed(() => {
-    const searchLower = this.search()?.toLocaleLowerCase();
-    return searchLower
-      ? this.events().filter((event) =>
-          event.title.toLocaleLowerCase().includes(searchLower)
-        )
-      : this.events();
-  });
-
   orderByPrice() {
-    this.events.update((events) =>
-      events.toSorted((a, b) => a.price - b.price)
-    );
+    this.order.set('price');
   }
 
   orderByDate() {
-    this.events.update((events) =>
-      events.toSorted((a, b) => a.date.localeCompare(b.date))
-    );
+    this.order.set('date');
+  }
+
+  orderByDistance() {
+    this.order.set('distance');
+  }
+
+  loadMore(){
+    this.pageNumber.update((page) => page + 1);
   }
 }
