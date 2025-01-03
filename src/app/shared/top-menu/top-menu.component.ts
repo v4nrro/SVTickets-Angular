@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../../auth/services/auth.service';
 
 @Component({
     selector: 'top-menu',
@@ -8,5 +9,11 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
     styleUrl: './top-menu.component.css'
 })
 export class TopMenuComponent {
+    #authService = inject(AuthService);
+    #router = inject(Router);
 
+    logout() {
+        this.#authService.logout();
+        this.#router.navigate(['/auth/login']);
+      }
 }

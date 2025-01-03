@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { profileResolver } from './resolvers/profile.resolver';
 
 export const profileRoutes: Routes = [
   {
@@ -7,7 +8,10 @@ export const profileRoutes: Routes = [
       import('./profile-page/profile-page.component').then(
         (m) => m.ProfilePageComponent
       ),
-    title: 'Profile Page',
+    title: 'My Profile Page',
+    resolve: {
+        user: profileResolver
+    },
   },
   {
     path: ':id',
@@ -16,5 +20,8 @@ export const profileRoutes: Routes = [
         (m) => m.ProfilePageComponent
       ),
     title: 'Profile Page',
+    resolve: {
+        user: profileResolver
+    },
   },
 ];

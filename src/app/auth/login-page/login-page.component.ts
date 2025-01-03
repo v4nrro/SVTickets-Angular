@@ -53,8 +53,7 @@ export class LoginPageComponent {
         lng: this.coords().longitude,
       })
       .pipe(takeUntilDestroyed(this.#destroyRef))
-      .subscribe((result) => {
-        localStorage.setItem('token', result.accessToken);
+      .subscribe(() => {
         this.#router.navigate(['/events']);
       });
   }
@@ -67,8 +66,7 @@ export class LoginPageComponent {
         lng: this.coords().longitude,
       })
       .pipe(takeUntilDestroyed(this.#destroyRef))
-      .subscribe((result) => {
-        localStorage.setItem('token', result.accessToken);
+      .subscribe(() => {
         this.#router.navigate(['/events']);
       });
   }
@@ -81,8 +79,7 @@ export class LoginPageComponent {
         lng: this.coords().longitude,
       })
       .pipe(takeUntilDestroyed(this.#destroyRef))
-      .subscribe((result) => {
-        localStorage.setItem('token', result.accessToken);
+      .subscribe(() => {
         this.#router.navigate(['/events']);
       });
   }
