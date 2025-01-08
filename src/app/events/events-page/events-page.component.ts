@@ -46,7 +46,7 @@ export class EventsPageComponent {
         if (this.search() !== '' || this.order() !== '') {
           this.pageNumber.set(1);
         }
-      });
+    }); 
 
     effect(() => {
         this.#eventsService

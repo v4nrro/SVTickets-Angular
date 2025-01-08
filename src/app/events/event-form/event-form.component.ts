@@ -12,9 +12,9 @@ import { minDateValidator } from '../../shared/validators/min-date.validator';
 import { EventsService } from '../services/events.service';
 import { Component, inject, DestroyRef, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-// import { GaAutocompleteDirective } from '../../ol-maps/ga-autocomplete.directive';
-// import { OlMapDirective } from '../../ol-maps/ol-map.directive';
-// import { OlMarkerDirective } from '../../ol-maps/ol-marker.directive';
+import { GaAutocompleteDirective } from '../../ol-maps/ga-autocomplete.directive';
+import { OlMapDirective } from '../../ol-maps/ol-map.directive';
+import { OlMarkerDirective } from '../../ol-maps/ol-marker.directive';
 import { SearchResult } from '../../ol-maps/search-result';
 
 @Component({
@@ -24,9 +24,9 @@ import { SearchResult } from '../../ol-maps/search-result';
     ValidationClassesDirective,
     ReactiveFormsModule,
     DatePipe,
-    // OlMapDirective,
-    // OlMarkerDirective,
-    // GaAutocompleteDirective,
+    OlMapDirective,
+    OlMarkerDirective,
+    GaAutocompleteDirective,
   ],
   templateUrl: './event-form.component.html',
   styleUrl: './event-form.component.css',
@@ -40,10 +40,10 @@ export class EventFormComponent implements CanComponentDeactivate {
 
   coordinates = signal<[number, number]>([-0.5, 38.5]);
 
-//   changePlace(result: SearchResult) {
-//     this.coordinates.set(result.coordinates);
-//     console.log(result.address); // Habría que guardarlo
-//   }
+  changePlace(result: SearchResult) {
+    this.coordinates.set(result.coordinates);
+    console.log(result.address); // Enviarlo a la petición
+  }
 
   minDate = new Date().toISOString().substring(0, 10);
 
