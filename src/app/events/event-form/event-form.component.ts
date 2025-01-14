@@ -15,7 +15,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { GaAutocompleteDirective } from '../../ol-maps/ga-autocomplete.directive';
 import { OlMapDirective } from '../../ol-maps/ol-map.directive';
 import { OlMarkerDirective } from '../../ol-maps/ol-marker.directive';
-import { SearchResult } from '../../ol-maps/search-result';
+import { SearchResult } from '../../ol-maps/interfaces/search-result';
 
 @Component({
   selector: 'event-form',
@@ -39,10 +39,11 @@ export class EventFormComponent implements CanComponentDeactivate {
   #fb = inject(NonNullableFormBuilder);
 
   coordinates = signal<[number, number]>([-0.5, 38.5]);
+  address = signal<string>('');
 
   changePlace(result: SearchResult) {
     this.coordinates.set(result.coordinates);
-    console.log(result.address); // Enviarlo a la petición
+    this.address.set(result.address);
   }
 
   minDate = new Date().toISOString().substring(0, 10);
@@ -75,9 +76,9 @@ export class EventFormComponent implements CanComponentDeactivate {
       .addEvent({
         ...this.eventForm.getRawValue(),
         image: this.imageBase64,
-        lat: 1,
-        lng: 2,
-        address: 'string',
+        lat: this.coordinates()[1],
+        lng: this.coordinates()[0],
+        address: this.address(),
       })
       .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe(() => {

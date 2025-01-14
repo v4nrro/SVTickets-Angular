@@ -99,11 +99,12 @@
         style="width: 200px; height: auto"
     />
   }
-
-  <ol-map [coordinates]="coordinates()">
-    <ga-autocomplete (locationChange)="changePlace($event)"></ga-autocomplete>
-    <ol-marker [coordinates]="coordinates()"></ol-marker>
-  </ol-map>
+    <div>
+        <ol-map [coordinates]="coordinates()">
+            <ga-autocomplete class="searchBar" (locationChange)="changePlace($event)"></ga-autocomplete>
+            <ol-marker [coordinates]="coordinates()"></ol-marker>
+        </ol-map>
+    </div>
 
   <div>
     <button 
@@ -115,3 +116,4 @@
     </button>
   </div>
 </form>
+

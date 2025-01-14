@@ -80,7 +80,13 @@
     >Attending events</a
     >
 
-    <div class="mt-4" id="map"></div>
+    <div class="mt-4" id="map">
+        <div>
+            <ol-map [coordinates]="coordinates()">
+                <ol-marker [coordinates]="coordinates()"></ol-marker>
+            </ol-map>
+        </div>
+    </div>
 }
 @else {
     <div>Loading user...</div>

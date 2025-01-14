@@ -8,10 +8,13 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommentsResponse, UsersResponse } from '../../shared/interfaces/responses';
 import { DatePipe } from '@angular/common';
 import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { OlMapDirective } from '../../ol-maps/ol-map.directive';
+import { OlMarkerDirective } from '../../ol-maps/ol-marker.directive';
 
 @Component({
     selector: 'event-detail',
-    imports: [EventCardComponent, DatePipe, FormsModule, ReactiveFormsModule],
+    imports: [EventCardComponent, DatePipe, FormsModule, ReactiveFormsModule, OlMapDirective,
+        OlMarkerDirective,],
     templateUrl: './event-detail.component.html',
     styleUrl: './event-detail.component.css'
 })
@@ -28,6 +31,8 @@ export class EventDetailComponent {
     comments = signal<CommentsResponse>({comments: []});
     attendees = signal<UsersResponse>({users: []});
 
+    coordinates = signal<[number, number]>([0, 0]);
+
     commentForm = this.#fb.group({
         comment: ['', [Validators.required]]
     });
@@ -36,6 +41,7 @@ export class EventDetailComponent {
         effect(() => {
             if(this.event()) {
                 this.#title.setTitle(this.event()!.title + ' | Event');
+                this.coordinates.set([this.event().lng, this.event().lat])
             }
         });
 

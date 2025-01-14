@@ -8,8 +8,13 @@
                     (attended)="updateLists()"
                 ></event-card>
             </div>
+            <div>
+                <ol-map [coordinates]="coordinates()">
+                    <ol-marker [coordinates]="coordinates()"></ol-marker>
+                </ol-map>
+            </div>
         </div>
-    
+
         <div class="card mt-4 mb-4">
             <div class="card-header bg-danger text-white" id="address">Attendees to the event</div>
             <ul class="list-group" id="userList">
