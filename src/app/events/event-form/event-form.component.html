@@ -1,4 +1,4 @@
-<form [formGroup]="eventForm" (ngSubmit)="addEvent()">
+<form [formGroup]="eventForm" (ngSubmit)="event() ? editEvent() : addEvent()">
   <div class="mb-3">
     <label for="title" class="form-label">Title</label>
     <input
@@ -99,7 +99,9 @@
         style="width: 200px; height: auto"
     />
   }
+  
     <div>
+        {{event()? event().address : ""}}
         <ol-map [coordinates]="coordinates()">
             <ga-autocomplete class="searchBar" (locationChange)="changePlace($event)"></ga-autocomplete>
             <ol-marker [coordinates]="coordinates()"></ol-marker>
@@ -107,13 +109,24 @@
     </div>
 
   <div>
-    <button 
-        type="submit" 
-        class="btn btn-primary"
-        [disabled]="eventForm.invalid"
-    >
-    Create 
-    </button>
+    @if(event()){
+        <button 
+            type="submit" 
+            class="btn btn-primary"
+            [disabled]="eventForm.invalid"
+        >
+        Edit event 
+        </button>
+    }@else {
+        <button 
+            type="submit" 
+            class="btn btn-primary"
+            [disabled]="eventForm.invalid"
+        >
+        Create 
+        </button>
+    }
+    
   </div>
 </form>
 

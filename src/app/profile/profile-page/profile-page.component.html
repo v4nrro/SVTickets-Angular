@@ -1,93 +1,179 @@
 @if(user()){
-    <div class="container">
-        <div class="row mt-4" id="profile">
-            <div class="col-3">
-                <div>
-                    <img class="w-100" id="avatar" [src]="user().avatar" alt="" />
-                    @if(user().me){
-                        <label class="btn btn-sm btn-danger">
-                            <i class="bi bi-image"></i>
-                            <input type="file" id="photoInput" class="d-none" />
-                        </label>
-                    }
+<div class="container">
+  <div class="row mt-4" id="profile">
+    <div class="col-3">
+      <div>
+        <img class="w-100" id="avatar" [src]="user().avatar" alt="" />
+        @if(user().me){
+        <label class="btn btn-sm btn-danger">
+          <i class="bi bi-image"></i>
+          <input type="file" id="photoInput" class="d-none" />
+        </label>
+        }
+      </div>
+    </div>
+
+    <div class="col-9" id="profileInfo">
+      <h4 id="name">{{ user().name }}</h4>
+
+      <h4 id="email">
+        <small class="text-muted">{{ user().email }}</small>
+      </h4>
+
+      @if(user().me){
+      <div>
+        <button
+          class="btn btn-warning"
+          id="editProfile"
+          (click)="toggleEditProfile()"
+        >
+          <i class="fa-regular fa-pen-to-square"></i>
+          Edit profile
+        </button>
+        <button
+          class="btn btn-warning"
+          id="editPassword"
+          (click)="toggleEditPassword()"
+        >
+          <i class="fa-solid fa-lock"></i>
+          Edit password
+        </button>
+      </div>
+      } @if(isEditingProfile){
+      <div class="col-9" id="profileForm">
+        <form [formGroup]="profileForm" (ngSubmit)="changeProfile()">
+          <div class="mb-3">
+            <label for="email">Email:</label>
+            <input
+              type="email"
+              formControlName="email"
+              class="form-control"
+              name="email"
+              id="email"
+              placeholder="Email"
+              [validationClasses]="{ valid: 'is-valid', invalid: 'is-invalid' }"
+            />
+            @let emailError = profileForm.get('email')?.errors;
+            @if(emailError?.['required']){
+                <div class="invalid-feedback">
+                    Email is required
                 </div>
-            </div>
+            }
+            @if(emailError?.['email']){
+                <div class="invalid-feedback">
+                    Email must have a valid format 
+                </div>
+            }
+            <label for="name">Name:</label>
+            <input
+              type="text"
+              formControlName="name"
+              class="form-control"
+              name="name"
+              id="name"
+              placeholder="Name"
+              [validationClasses]="{ valid: 'is-valid', invalid: 'is-invalid' }"
+            />
+            @let nameError = profileForm.get('name')?.errors;
+            @if(nameError?.['required']){
+                <div class="invalid-feedback">
+                    Name is required
+                </div>
+            }
+          </div>
+          <button
+            [disabled]="profileForm.invalid"
+            type="submit"
+            class="btn btn-success"
+          >
+            Save changes
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger"
+            id="cancelEditProfile"
+            (click)="toggleEditProfile()"
+          >
+            Cancel
+          </button>
+        </form>
+      </div>
+      } @if(isEditingPassword){
+      <div class="col-9" id="passwordForm">
+        <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+          <div class="mb-3">
+            <label for="password">Password:</label>
+            <input
+              type="password"
+              class="form-control"
+              name="password"
+              id="password"
+              placeholder="Password"
+              formControlName="password1"
+              [validationClasses]="{ valid: 'is-valid', invalid: 'is-invalid' }"
+            />
+            @let passwordError = passwordForm.get('password1')?.errors;
+            @if(passwordError?.['required']){
+                <div class="invalid-feedback">
+                    Password is required
+                </div>
+            }
 
-            <div class="col-9" id="profileInfo">
-                <!--  Cambiar h4 por inputs con un botón -->
-                <h4 id="name">{{ user().name }}</h4>
+            <label for="password2">Repeat password:</label>
+            <input
+              type="password"
+              class="form-control"
+              name="password2"
+              id="password2"
+              formControlName="password2"
+              placeholder="Repeat password"
+              [validationClasses]="{ valid: 'is-valid', invalid: 'is-invalid' }"
 
-                <h4 id="email">
-                    <small class="text-muted">{{ user().email }}</small>
-                </h4>
-
-                @if(user().me){
-                    <div>
-                        <button class="btn btn-warning" id="editProfile" (click)="toggleEditProfile()">
-                        <i class="fa-regular fa-pen-to-square"></i>
-                        Edit profile
-                        </button>
-                        <button class="btn btn-warning" id="editPassword" (click)="toggleEditPassword()">
-                        <i class="fa-solid fa-lock"></i>
-                        Edit password
-                        </button>
-                    </div>
-                }
-                @if(isEditingProfile){
-                    <div class="col-9" id="profileForm">
-                        <form>
-                          <div class="mb-3">
-                            <label for="email">Email:</label>
-                            <input type="email" class="form-control" name="email" id="email" placeholder="Email" [value]="user().email"/>
-                            <label for="name">Name:</label>
-                            <input type="text" class="form-control" name="name" id="name" placeholder="Name" [value]="user().name"/>
-                          </div>
-                          <button type="submit" class="btn btn-success">Save changes</button>
-                          <button type="button" class="btn btn-danger" id="cancelEditProfile" (click)="toggleEditProfile()">Cancel</button>
-                        </form>
-                    </div>
-                }
-
-                @if(isEditingPassword){
-                    <div class="col-9" id="passwordForm">
-                        <form>
-                          <div class="mb-3">
-                            <label for="password">Password:</label>
-                            <input type="password" class="form-control" name="password" id="password" placeholder="Password" />
-                            <label for="password2">Repeat password:</label>
-                            <input type="password" class="form-control" name="password2" id="password2" placeholder="Repeat password" />
-                          </div>
-                          <button type="submit" class="btn btn-success">Save changes</button>
-                          <button type="button" class="btn btn-danger" id="cancelEditPassword" (click)="toggleEditPassword()">Cancel</button>
-                        </form>
-                    </div>
-                } 
-            </div>
-        </div>
+            />
+          </div>
+          <button
+            [disabled]="passwordForm.invalid"
+            type="submit"
+            class="btn btn-success"
+          >
+            Save changes
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger"
+            id="cancelEditPassword"
+            (click)="toggleEditPassword()"
+          >
+            Cancel
+          </button>
+        </form>
+      </div>
+      }
     </div>
+  </div>
+</div>
 
-    <a
-    [routerLink]="['/events']"
-    [queryParams]="{ creator: user().id }"
-    class="btn btn-primary mt-4"
-    >Created events</a
-    >
+<a
+  [routerLink]="['/events']"
+  [queryParams]="{ creator: user().id }"
+  class="btn btn-primary mt-4"
+  >Created events</a
+>
 
-    <a
-    [routerLink]="['/events']"
-    [queryParams]="{ attending: user().id }"
-    class="btn btn-primary mt-4"
-    >Attending events</a
-    >
+<a
+  [routerLink]="['/events']"
+  [queryParams]="{ attending: user().id }"
+  class="btn btn-primary mt-4"
+  >Attending events</a
+>
 
-    <div class="mt-4" id="map">
-        <div>
-            <ol-map [coordinates]="coordinates()">
-                <ol-marker [coordinates]="coordinates()"></ol-marker>
-            </ol-map>
-        </div>
-    </div>
-}
-@else {
-    <div>Loading user...</div>
+<div class="mt-4" id="map">
+  <div>
+    <ol-map [coordinates]="coordinates()">
+      <ol-marker [coordinates]="coordinates()"></ol-marker>
+    </ol-map>
+  </div>
+</div>
+} @else {
+<div>Loading user...</div>
 }

@@ -24,41 +24,38 @@ export class EventsPageComponent {
   title = 'Events Page';
 
   #eventsService = inject(EventsService);
+  #destroyRef = inject(DestroyRef);
 
   events = signal<MyEvent[]>([]);
+  order = signal('');
+  pageNumber = signal(1);
 
   searchControl = new FormControl('');
   search = toSignal(
     this.searchControl.valueChanges.pipe(
-        debounceTime(600), 
-        distinctUntilChanged()
+      debounceTime(600),
+      distinctUntilChanged()
     ),
     { initialValue: '' }
-  )
-  
-  #destroyRef = inject(DestroyRef);
-
-  order = signal('');
-  pageNumber = signal(1);
+  );
 
   constructor() {
     effect(() => {
-        if (this.search() !== '' || this.order() !== '') {
-          this.pageNumber.set(1);
-        }
-    }); 
+      if (this.search() !== '' || this.order() !== '') {
+        this.pageNumber.set(1);
+      }
+    });
 
     effect(() => {
-        this.#eventsService
+      this.#eventsService
         .getEvents(this.order(), this.pageNumber(), this.search()!)
         .pipe(takeUntilDestroyed(this.#destroyRef))
         .subscribe((myEvents) => {
-            if(this.pageNumber() === 1) {
-                this.events.set(myEvents)
-            }
-            else {
-                this.events.update((events) => [...events, ...myEvents]);
-            }
+          if (this.pageNumber() === 1) {
+            this.events.set(myEvents);
+          } else {
+            this.events.update((events) => [...events, ...myEvents]);
+          }
         });
     });
   }
@@ -83,7 +80,7 @@ export class EventsPageComponent {
     this.order.set('distance');
   }
 
-  loadMore(){
+  loadMore() {
     this.pageNumber.update((page) => page + 1);
   }
 }

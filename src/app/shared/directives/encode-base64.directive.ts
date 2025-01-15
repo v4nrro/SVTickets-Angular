@@ -9,14 +9,17 @@ import { Directive, output } from '@angular/core';
 })
 export class EncodeBase64Directive {
     encoded = output<string>();
-  
+
     encodeFile(event: Event) {
-      const fileInput = event.target as HTMLInputElement;
-      if (!fileInput.files?.length) return;
-      const reader = new FileReader();
-      reader.readAsDataURL(fileInput.files[0]);
-      reader.addEventListener('loadend', () => {
+        const fileInput = event.target as HTMLInputElement;
+        if (!fileInput.files?.length) {
+            this.encoded.emit('');
+            return;
+        };
+        const reader = new FileReader();
+        reader.readAsDataURL(fileInput.files[0]);
+        reader.addEventListener('loadend', () => {
         this.encoded.emit(reader.result as string);
-      });
+        });
     }
   }

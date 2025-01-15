@@ -10,12 +10,13 @@ import { ValidationClassesDirective } from '../../shared/directives/validation-c
 import { CanComponentDeactivate } from '../../shared/guards/leave-page.guard';
 import { minDateValidator } from '../../shared/validators/min-date.validator';
 import { EventsService } from '../services/events.service';
-import { Component, inject, DestroyRef, signal } from '@angular/core';
+import { Component, inject, DestroyRef, signal, input, effect } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { GaAutocompleteDirective } from '../../ol-maps/ga-autocomplete.directive';
 import { OlMapDirective } from '../../ol-maps/ol-map.directive';
 import { OlMarkerDirective } from '../../ol-maps/ol-marker.directive';
 import { SearchResult } from '../../ol-maps/interfaces/search-result';
+import { MyEvent } from '../interfaces/MyEvent';
 
 @Component({
   selector: 'event-form',
@@ -38,6 +39,7 @@ export class EventFormComponent implements CanComponentDeactivate {
   #saved = false;
   #fb = inject(NonNullableFormBuilder);
 
+  event = input.required<MyEvent>();
   coordinates = signal<[number, number]>([-0.5, 38.5]);
   address = signal<string>('');
 
@@ -63,6 +65,31 @@ export class EventFormComponent implements CanComponentDeactivate {
   });
   imageBase64 = '';
 
+constructor(){
+    effect(() => {
+        if(this.event()){
+            this.eventForm = this.#fb.group({
+                title: [this.event().title,
+                  [
+                    Validators.required,
+                    Validators.minLength(5),
+                    Validators.pattern('^[a-zA-Z][a-zA-Z ]*$'),
+                  ],
+                ],
+                description: [this.event().description, [Validators.required, Validators.minLength(5)]],
+                price: [this.event().price, [Validators.required, Validators.min(0.1)]],
+                image: [''],
+                date: [this.event().date.toString().substring(0,10), [Validators.required, minDateValidator(this.minDate)]],
+              });
+
+            this.imageBase64 = this.event().image;
+
+            this.coordinates.set([this.event().lng, this.event().lat]);
+            this.address.set(this.event().address);
+        }
+    })
+}
+
   canDeactivate() {
     return (
       this.#saved ||
@@ -80,6 +107,22 @@ export class EventFormComponent implements CanComponentDeactivate {
         lng: this.coordinates()[0],
         address: this.address(),
       })
+      .pipe(takeUntilDestroyed(this.#destroyRef))
+      .subscribe(() => {
+        this.#saved = true;
+        this.#router.navigate(['/events']);
+      });
+  }
+
+  editEvent() {
+    this.#eventsService
+      .editEvent({
+        ...this.eventForm.getRawValue(),
+        image: this.imageBase64,
+        lat: this.coordinates()[1],
+        lng: this.coordinates()[0],
+        address: this.address(),
+      }, this.event().id)
       .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe(() => {
         this.#saved = true;

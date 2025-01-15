@@ -15,12 +15,28 @@ export class EventsService {
     #http = inject(HttpClient);
 
     getEvents(order: string, currentPage: number, search: string): Observable<MyEvent[]> {
-        const params = new URLSearchParams({ page: String(currentPage), order, search });
+        const params = new URLSearchParams({page: String(currentPage), order, search });
 
         return this.#http
           .get<EventsResponse>(this.#eventsUrl + "?" + params.toString())
           .pipe(map((resp) => resp.events));
-      }
+    }
+
+    getEventsCreatedByUser(creator: number, order: string, currentPage: number, search: string): Observable<MyEvent[]> {
+        const params = new URLSearchParams({creator: String(creator), page: String(currentPage), order, search });
+
+        return this.#http
+          .get<EventsResponse>(this.#eventsUrl + "?" + params.toString())
+          .pipe(map((resp) => resp.events));
+    }
+
+    getEventsAttending(attendant: number, order: string, currentPage: number, search: string): Observable<MyEvent[]> {
+        const params = new URLSearchParams({attending: String(attendant), page: String(currentPage), order, search });
+
+        return this.#http
+          .get<EventsResponse>(this.#eventsUrl + "?" + params.toString())
+          .pipe(map((resp) => resp.events));
+    }
 
     getEvent(id: number): Observable<MyEvent> {
         return this.#http
@@ -32,6 +48,12 @@ export class EventsService {
             return this.#http
             .post<SingleEventResponse>(this.#eventsUrl, event)
             .pipe(map((resp) => resp.event));
+    }
+
+    editEvent(event: MyEventInsert, id: number): Observable<MyEvent> {
+        return this.#http
+        .put<SingleEventResponse>(`${this.#eventsUrl}/${id}`, event)
+        .pipe(map((resp) => resp.event));
     }
 
     deleteEvent(id: number): Observable<void> {

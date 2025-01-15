@@ -1,6 +1,6 @@
 import { Component, DestroyRef, effect, inject, input, signal } from '@angular/core';
 import { EventsService } from '../services/events.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { MyEvent } from '../interfaces/MyEvent';
 import { EventCardComponent } from "../event-card/event-card.component";
@@ -14,7 +14,7 @@ import { OlMarkerDirective } from '../../ol-maps/ol-marker.directive';
 @Component({
     selector: 'event-detail',
     imports: [EventCardComponent, DatePipe, FormsModule, ReactiveFormsModule, OlMapDirective,
-        OlMarkerDirective,],
+        OlMarkerDirective, RouterLink],
     templateUrl: './event-detail.component.html',
     styleUrl: './event-detail.component.css'
 })

@@ -26,14 +26,14 @@ export class ProfileService {
     }
 
     saveProfile(profile: UserProfileEdit): Observable<void> {
-        return this.#http.put<void>(`${this.#profileUrl}/users/me`, profile);
+        return this.#http.put<void>(`${this.#profileUrl}/me`, profile);
     }
 
     savePassword(password: UserPasswordEdit): Observable<void> {
-        return this.#http.put<void>(`${this.#profileUrl}/users/me/password`, password);
+        return this.#http.put<void>(`${this.#profileUrl}/me/password`, password);
     }
 
     saveAvatar(avatar: UserPhotoEdit): Observable<void> {
-        return this.#http.put<void>(`${this.#profileUrl}/users/me/photo`, avatar);
+        return this.#http.put<void>(`${this.#profileUrl}/me/photo`, avatar);
     }
 }
