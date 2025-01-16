@@ -5,10 +5,18 @@
       <div>
         <img class="w-100" id="avatar" [src]="user().avatar" alt="" />
         @if(user().me){
-        <label class="btn btn-sm btn-danger">
-          <i class="bi bi-image"></i>
-          <input type="file" id="photoInput" class="d-none" />
-        </label>
+            <label class="btn btn-sm btn-danger">
+                <i class="bi bi-image"></i>
+                <input 
+                    type="file" 
+                    id="photoInput" 
+                    class="d-none"
+                    accept="image/*"
+                    encodeBase64
+                    (encoded)="imageBase64 = $event"
+                    (change)="changeImage()"
+                />
+            </label>
         }
       </div>
     </div>
@@ -119,6 +127,7 @@
                 </div>
             }
 
+            @let password2Model = passwordForm.get('password2')!;
             <label for="password2">Repeat password:</label>
             <input
               type="password"
@@ -127,9 +136,14 @@
               id="password2"
               formControlName="password2"
               placeholder="Repeat password"
-              [validationClasses]="{ valid: 'is-valid', invalid: 'is-invalid' }"
-
+              [class]="{
+                'is-valid': password2Model.touched && !passwordForm.errors?.['equalValues'],
+                'is-invalid': password2Model.touched && passwordForm.errors?.['equalValues'],
+              }"
             />
+            <div class="invalid-feedback">
+                Passwords doesn't match
+            </div>
           </div>
           <button
             [disabled]="passwordForm.invalid"

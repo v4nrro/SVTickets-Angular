@@ -8,7 +8,6 @@ import { MyGeolocationService } from '../../shared/services/my-geolocation.servi
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { from } from 'rxjs';
 import { AuthService } from '../services/auth.service';
-import { User } from '../interfaces/user';
 
 @Component({
     selector: 'app-register-page',
