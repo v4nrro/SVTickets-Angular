@@ -89,6 +89,10 @@
       [validationClasses]="{ valid: 'is-valid', invalid: 'is-invalid' }"
     />
     <div class="invalid-feedback">An image is required.</div>
+
+    @if(!imageBase64){
+        <div class="invalid-feedback">An image is required.</div>
+    }
   </div>
 
   @if(imageBase64){
@@ -113,7 +117,7 @@
         <button 
             type="submit" 
             class="btn btn-primary"
-            [disabled]="eventForm.invalid"
+            [disabled]="eventForm.invalid || !imageBase64"
         >
         Edit event 
         </button>

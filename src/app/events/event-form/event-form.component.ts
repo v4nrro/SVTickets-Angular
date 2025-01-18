@@ -68,19 +68,15 @@ export class EventFormComponent implements CanComponentDeactivate {
 constructor(){
     effect(() => {
         if(this.event()){
-            this.eventForm = this.#fb.group({
-                title: [this.event().title,
-                  [
-                    Validators.required,
-                    Validators.minLength(5),
-                    Validators.pattern('^[a-zA-Z][a-zA-Z ]*$'),
-                  ],
-                ],
-                description: [this.event().description, [Validators.required, Validators.minLength(5)]],
-                price: [this.event().price, [Validators.required, Validators.min(0.1)]],
-                image: [''],
-                date: [this.event().date.toString().substring(0,10), [Validators.required, minDateValidator(this.minDate)]],
+            this.eventForm.setValue({
+                title: this.event().title,
+                description: this.event().description,
+                price: this.event().price,
+                image: '',
+                date: this.event().date.toString().substring(0,10)
               });
+
+            this.eventForm.controls['image'].setValidators([]);
 
             this.imageBase64 = this.event().image;
 
