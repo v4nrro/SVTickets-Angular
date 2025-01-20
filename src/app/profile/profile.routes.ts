@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { profileResolver } from './resolvers/profile.resolver';
+import { loginActivateGuard } from '../shared/guards/login-activate.guard';
 
 export const profileRoutes: Routes = [
   {
@@ -12,6 +13,7 @@ export const profileRoutes: Routes = [
     resolve: {
         user: profileResolver
     },
+    canActivate: [loginActivateGuard],
   },
   {
     path: ':id',
@@ -23,5 +25,6 @@ export const profileRoutes: Routes = [
     resolve: {
         user: profileResolver
     },
+    canActivate: [loginActivateGuard],
   },
 ];

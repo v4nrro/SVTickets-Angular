@@ -38,11 +38,11 @@ import { EncodeBase64Directive } from '../../shared/directives/encode-base64.dir
 })
 export class ProfilePageComponent {
   user = input.required<User>();
-  userSignal = signal<User | null>(null);
 
   #fb = inject(NonNullableFormBuilder);
   #profileService = inject(ProfileService);
   #destroyRef = inject(DestroyRef);
+  #changeDetector = inject(ChangeDetectorRef)
 
   isEditingProfile: boolean = false;
   isEditingPassword: boolean = false;
@@ -62,11 +62,15 @@ export class ProfilePageComponent {
     { validators: equalValues('password1', 'password2') }
   );
 
+  imageForm = this.#fb.group({
+    image: ['', [Validators.required]],
+  });
+
   imageBase64 = '';
 
   constructor() {
     effect(() => {
-      if (this.user()) {        
+      if (this.user()) {
         this.coordinates.set([this.user().lng, this.user().lat]);
 
         this.profileForm = this.#fb.group({
@@ -82,8 +86,9 @@ export class ProfilePageComponent {
       .saveProfile(this.profileForm.getRawValue())
       .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe(() => {
-        console.log('Profile changed!');
-        console.log(this.profileForm.getRawValue());
+        this.user().email = this.profileForm.getRawValue().email
+        this.user().name = this.profileForm.getRawValue().name
+        this.#changeDetector.markForCheck();
       });
   }
 
@@ -106,8 +111,9 @@ export class ProfilePageComponent {
       })
       .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe(() => {
-        console.log('Image changed!');
-        console.log(this.imageBase64);
+        this.user().avatar = this.imageBase64
+        this.#changeDetector.markForCheck()
+        this.imageBase64 = ''
       });
   }
 

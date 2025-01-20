@@ -44,10 +44,8 @@
     }
   </div>
   <p class="text-danger" id="errorInfo"></p>
-  <a class="btn btn-secondary" [routerLink]="['/auth/register']" role="button"
-    >Create account</a
-  >
-  <button type="submit" class="btn btn-primary">Login</button>
+  <a class="btn btn-secondary" [routerLink]="['/auth/register']" role="button">Create account</a>
+  <button type="submit" class="btn btn-primary m-4">Login</button>
 
   <div>
     <google-login class="btn" (login)="loggedGoogle($event)"></google-login>
@@ -65,9 +63,4 @@
       Login con Facebook
     </button>
   </div>
-
-  <br />
-  <button type="submit" class="btn btn-primary" (click)="logout()">
-    logout
-  </button>
 </form>

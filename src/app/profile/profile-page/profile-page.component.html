@@ -5,18 +5,30 @@
       <div>
         <img class="w-100" id="avatar" [src]="user().avatar" alt="" />
         @if(user().me){
-            <label class="btn btn-sm btn-danger">
-                <i class="bi bi-image"></i>
-                <input 
-                    type="file" 
-                    id="photoInput" 
-                    class="d-none"
-                    accept="image/*"
-                    encodeBase64
-                    (encoded)="imageBase64 = $event"
-                    (change)="changeImage()"
-                />
-            </label>
+            <form [formGroup]="imageForm" (ngSubmit)="changeImage()">
+                <label class="btn btn-sm btn-danger">
+                    <i class="bi bi-image"></i>
+                    <input 
+                        type="file" 
+                        id="photoInput" 
+                        class="d-none"
+                        accept="image/*"
+                        encodeBase64
+                        (encoded)="imageBase64 = $event"
+                        formControlName="image"
+                    />
+                </label>
+                @if(imageBase64){
+                    <br>
+                    <img
+                        [src]="imageBase64"
+                        alt=""
+                        class="img-thumbnail m-3"
+                        style="width: 100px; height: auto"
+                    />
+                    <button type="submit" class="btn btn-sm btn-warning">Change image</button>
+                }
+            </form>
         }
       </div>
     </div>

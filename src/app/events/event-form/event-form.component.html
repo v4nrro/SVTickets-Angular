@@ -89,10 +89,6 @@
       [validationClasses]="{ valid: 'is-valid', invalid: 'is-invalid' }"
     />
     <div class="invalid-feedback">An image is required.</div>
-
-    @if(!imageBase64){
-        <div class="invalid-feedback">An image is required.</div>
-    }
   </div>
 
   @if(imageBase64){

@@ -20,11 +20,11 @@
             <ul class="list-group" id="userList">
                 @for(attendant of attendees().users; track attendant.id){
                     <li class="list-group-item">
-                        <a class="avatar" href="">
+                        <a class="avatar" [routerLink]="['/profile', attendant.id]">
                             <img class="rounded-circle float-start me-3" style="width: 40px; height: 40px;" [src]="attendant.avatar" alt="" />
                         </a>
                         <div>
-                            <div><a class="text-decoration-none name" href="">{{attendant.name}}</a></div>
+                            <div><a class="text-decoration-none name" [routerLink]="['/profile', attendant.id]">{{attendant.name}}</a></div>
                             <div>
                                 <small class="email">{{attendant.email}}</small>
                             </div>
