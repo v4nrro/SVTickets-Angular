@@ -7,7 +7,9 @@ import { MyEvent } from '../interfaces/MyEvent';
 import { EventsService } from '../services/events.service';
 import { AttendComponent } from "../../shared/attend/attend.component";
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { faStar as faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { ConfirmModalComponent } from '../../shared/modals/confirm-modal/confirm-modal.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 
 @Component({
@@ -25,14 +27,22 @@ export class EventCardComponent {
     attended = output<void>();
 
     #eventsService = inject(EventsService);
+    #modalService = inject(NgbModal)
     #destroyRef = inject(DestroyRef);
     #changeDetector = inject(ChangeDetectorRef);
 
     deleteEvent() {
-        this.#eventsService
-          .deleteEvent(this.event().id!)
-          .pipe(takeUntilDestroyed(this.#destroyRef))
-          .subscribe(() => this.deleted.emit());
+        const modalRef = this.#modalService.open(ConfirmModalComponent);
+        modalRef.componentInstance.title = 'Deleting event';
+        modalRef.componentInstance.body = 'Are you sure you want to delete this event?';
+        modalRef.result.then((optionSelected) => {
+            if(optionSelected)
+                this.#eventsService
+                .deleteEvent(this.event().id!)
+                .pipe(takeUntilDestroyed(this.#destroyRef))
+                .subscribe(() => this.deleted.emit());
+        })
+        .catch(() => {});
     }
 
     attendEvent(attend: boolean) {

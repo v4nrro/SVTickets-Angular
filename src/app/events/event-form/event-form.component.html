@@ -121,7 +121,7 @@
         <button 
             type="submit" 
             class="btn btn-primary"
-            [disabled]="eventForm.invalid"
+            [disabled]="eventForm.invalid || !address()"
         >
         Create 
         </button>

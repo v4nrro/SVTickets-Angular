@@ -1,5 +1,6 @@
 import { DatePipe } from '@angular/common';
 import {
+    NgForm,
   NonNullableFormBuilder,
   ReactiveFormsModule,
   Validators,
@@ -10,13 +11,15 @@ import { ValidationClassesDirective } from '../../shared/directives/validation-c
 import { CanComponentDeactivate } from '../../shared/guards/leave-page.guard';
 import { minDateValidator } from '../../shared/validators/min-date.validator';
 import { EventsService } from '../services/events.service';
-import { Component, inject, DestroyRef, signal, input, effect } from '@angular/core';
+import { Component, inject, DestroyRef, signal, input, effect, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { GaAutocompleteDirective } from '../../ol-maps/ga-autocomplete.directive';
 import { OlMapDirective } from '../../ol-maps/ol-map.directive';
 import { OlMarkerDirective } from '../../ol-maps/ol-marker.directive';
 import { SearchResult } from '../../ol-maps/interfaces/search-result';
 import { MyEvent } from '../interfaces/MyEvent';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ConfirmModalComponent } from '../../shared/modals/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'event-form',
@@ -38,6 +41,7 @@ export class EventFormComponent implements CanComponentDeactivate {
   #router = inject(Router);
   #saved = false;
   #fb = inject(NonNullableFormBuilder);
+  #modalService = inject(NgbModal);
 
   event = input.required<MyEvent>();
   coordinates = signal<[number, number]>([-0.5, 38.5]);
@@ -87,11 +91,14 @@ constructor(){
 }
 
   canDeactivate() {
-    return (
-      this.#saved ||
-      this.eventForm.pristine ||
-      confirm('¿Quieres abandonar la página?. Los cambios se perderán...')
-    );
+    if (this.#saved || this.eventForm.pristine){
+        return true
+    }
+
+    const modalRef = this.#modalService.open(ConfirmModalComponent);
+    modalRef.componentInstance.title = 'Changes not saved';
+    modalRef.componentInstance.body = 'Do you want to leave the page?';
+    return modalRef.result.catch(() => false);
   }
 
   addEvent() {

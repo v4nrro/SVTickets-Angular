@@ -8,6 +8,8 @@ import { MyGeolocationService } from '../../shared/services/my-geolocation.servi
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { from } from 'rxjs';
 import { AuthService } from '../services/auth.service';
+import { ConfirmModalComponent } from '../../shared/modals/confirm-modal/confirm-modal.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: 'app-register-page',
@@ -21,6 +23,7 @@ export class RegisterPageComponent {
     #saved = false;
     #router = inject(Router)
     #authService = inject(AuthService)
+    #modalService = inject(NgbModal);
 
     registerForm = this.#fb.group({
         nameUser: ['', [Validators.required]],
@@ -40,8 +43,14 @@ export class RegisterPageComponent {
     coords = toSignal(from(MyGeolocationService.getLocation()), {initialValue:{latitude:0, longitude:0}})
 
     canDeactivate() {
-        return this.#saved || this.registerForm.pristine ||
-         confirm('¿Quieres abandonar la página?. Los cambios se perderán...');
+        if (this.#saved || this.registerForm.pristine){
+            return true
+        }
+        
+        const modalRef = this.#modalService.open(ConfirmModalComponent);
+        modalRef.componentInstance.title = 'Changes not saved';
+        modalRef.componentInstance.body = 'Do you want to leave the page?';
+        return modalRef.result.catch(() => false);
     }
 
     registerUser(){
