@@ -7,7 +7,7 @@
         @if(user().me){
             <form [formGroup]="imageForm" (ngSubmit)="changeImage()">
                 <label class="btn btn-sm btn-danger">
-                    <i class="bi bi-image"></i>
+                    <fa-icon [icon]="icons.faImage"></fa-icon>
                     <input 
                         type="file" 
                         id="photoInput" 

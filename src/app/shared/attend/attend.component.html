@@ -3,17 +3,17 @@
 
 <div class="col-auto ms-auto">
   <div class="text-end attend-users">
-    <i class="bi bi-people-fill"></i> 
+    <fa-icon [icon]="icons.faUser"></fa-icon>
     {{event().numAttend}}
   </div>
   @if(event().attend){
     <div class="text-success text-end m-0 attend-button attend" (click)="event().attend = false">
-        <i class="bi bi-hand-thumbs-up-fill"></i> 
+        <fa-icon [icon]="icons.faThumbsUp"></fa-icon>
         I'm going
     </div>
   }@else{
       <div class="text-danger text-end m-0 attend-button attend" (click)="event().attend = true">
-        <i class="bi bi-hand-thumbs-down-fill"></i> 
+        <fa-icon [icon]="icons.faThumbsDown"></fa-icon>
         I'm not going
       </div>
     }

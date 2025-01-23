@@ -46,8 +46,7 @@ export class EventDetailComponent {
         });
 
         effect(() => {
-            this.getAttendees();
-            this.getComments();
+            this.updateLists()
         });
     }
 

@@ -22,6 +22,8 @@ import { ProfileService } from '../services/profile.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { equalValues } from '../../shared/validators/equal-values.validator';
 import { EncodeBase64Directive } from '../../shared/directives/encode-base64.directive';
+import { faImage } from '@fortawesome/free-solid-svg-icons';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'profile-page',
@@ -32,11 +34,14 @@ import { EncodeBase64Directive } from '../../shared/directives/encode-base64.dir
     ReactiveFormsModule,
     EncodeBase64Directive,
     ValidationClassesDirective,
+    FaIconComponent
   ],
   templateUrl: './profile-page.component.html',
   styleUrl: './profile-page.component.css',
 })
 export class ProfilePageComponent {
+  icons = { faImage }
+
   user = input.required<User>();
 
   #fb = inject(NonNullableFormBuilder);

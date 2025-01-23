@@ -6,14 +6,20 @@ import { IntlCurrencyPipe } from '../../shared/pipes/events-filter.pipe';
 import { MyEvent } from '../interfaces/MyEvent';
 import { EventsService } from '../services/events.service';
 import { AttendComponent } from "../../shared/attend/attend.component";
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { faStar as faTrash } from '@fortawesome/free-solid-svg-icons';
+
 
 @Component({
     selector: 'event-card',
-    imports: [IntlCurrencyPipe, DatePipe, RouterLink, AttendComponent],
+    imports: [IntlCurrencyPipe, DatePipe, RouterLink, AttendComponent, FaIconComponent],
     templateUrl: './event-card.component.html',
     styleUrl: './event-card.component.css'
 })
+
 export class EventCardComponent {
+    icons = { faTrash }
+
     event = input.required<MyEvent>();
     deleted = output<void>();
     attended = output<void>();
